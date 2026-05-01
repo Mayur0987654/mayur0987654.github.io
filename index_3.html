@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --border: #222222;
+    --accent: #00ff88;
+    --accent2: #00ccff;
+    --text: #f0f0f0;
+    --muted: #555555;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: gridMove 20s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes gridMove {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(40px); }
+  }
+
+  .glow-orb {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .glow-orb.one { background: var(--accent); top: -100px; right: -100px; animation: float1 8s ease-in-out infinite; }
+  .glow-orb.two { background: var(--accent2); bottom: -100px; left: -100px; animation: float2 10s ease-in-out infinite; }
+
+  @keyframes float1 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-30px,30px); } }
+  @keyframes float2 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(30px,-30px); } }
+
+  .container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+  }
+
+  .logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  h1 { font-size: 32px; font-weight: 800; line-height: 1.1; margin-bottom: 8px; letter-spacing: -1px; }
+
+  h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 36px; letter-spacing: 1px; }
+
+  .input-group { margin-bottom: 20px; }
+
+  label { display: block; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+
+  input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+
+  input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,255,136,0.08); }
+  input::placeholder { color: var(--muted); }
+
+  button {
+    width: 100%;
+    padding: 15px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.3s ease;
+  }
+
+  button:hover { background: #00ffaa; transform: translateY(-1px); box-shadow: 0 8px 25px rgba(0,255,136,0.3); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .message {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    display: none;
+  }
+
+  .message.error { background: rgba(255,50,50,0.1); border: 1px solid rgba(255,50,50,0.3); color: #ff6b6b; display: block; }
+  .message.success { background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); color: var(--accent); display: block; }
+
+  .footer { margin-top: 24px; text-align: center; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+</style>
+</head>
+<body>
+
+<div class="glow-orb one"></div>
+<div class="glow-orb two"></div>
+
+<div class="container">
+  <div class="card">
+    <div class="logo">System Access</div>
+    <h1>Welcome<br><span>Back.</span></h1>
+    <p class="subtitle">// Enter your Gmail to continue</p>
+
+    <div class="input-group">
+      <label>Gmail Address</label>
+      <input type="email" id="emailInput" placeholder="you@gmail.com" />
+    </div>
+
+    <button id="loginBtn" onclick="handleLogin()">Enter →</button>
+    <div class="message" id="message"></div>
+    <div class="footer">No password required &nbsp;·&nbsp; Visitor log enabled</div>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://kldvcgfwzohpccrdttwh.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_UUqgETNC_IatArpglMqa0w_ssxuiuHI';
+
+  async function handleLogin() {
+    const email = document.getElementById('emailInput').value.trim();
+    const btn = document.getElementById('loginBtn');
+    const msg = document.getElementById('message');
+
+    msg.className = 'message';
+    msg.style.display = 'none';
+
+    if (!email || !email.includes('@')) {
+      msg.className = 'message error';
+      msg.textContent = '⚠ Enter a valid Gmail address';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Logging in...';
+
+    // Try saving to Supabase but don't block redirect
+    fetch(SUPABASE_URL + '/rest/v1/frf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ email: email, visisted: new Date().toISOString() })
+    }).catch(function() {});
+
+    // Always redirect regardless
+    msg.className = 'message success';
+    msg.textContent = '✓ Access granted — redirecting...';
+    setTimeout(function() {
+      window.location.href = 'main.html';
+    }, 1200);
+  }
+
+  document.getElementById('emailInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') handleLogin();
+  });
+</script>
+</body>
+</html>
